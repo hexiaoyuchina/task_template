@@ -1,4 +1,4 @@
-
+from __future__ import absolute_import, unicode_literals    # 保证 celery.py不和library冲突
 import os
 import django
 from django.conf import settings
@@ -8,7 +8,7 @@ from celery.signals import after_setup_logger, after_setup_task_logger
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'wan_task.settings')
 django.setup()
 
-app = Celery('wan_task')
+app = Celery('task_template')
 
 # Using a string here means the worker doesn't have to serialize
 # the configuration object to child processes.

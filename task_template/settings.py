@@ -9,7 +9,9 @@ https://docs.djangoproject.com/en/4.2/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.2/ref/settings/
 """
-
+import os
+from datetime import timedelta
+from kombu import Queue, Exchange
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -122,3 +124,33 @@ STATIC_URL = 'static/'
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+# Celery settings
+
+CELERY_BROKER_URL = os.environ.get("CELERY_BROKER_URL", "redis://127.0.0.1:6379/1")
+CELERY_RESULT_BACKEND = os.environ.get("CELERY_BROKER_URL", "redis://127.0.0.1:6379/1")
+CELERY_ACCEPT_CONTENT = ['json']
+CELERY_TASK_SERIALIZER = 'json'
+# 任务结果过期时间
+CELERY_RESULT_EXPIRES = 60 * 60
+# CELERY_TIMEZONE = 'Asia/Shanghai'
+CELERY_ENABLE_UTC = True
+CELERY_TASK_TIME_LIMIT = 60 * 60
+
+CELERY_TASK_QUEUES = (
+    Queue('workflow', Exchange('tasks', 'topic'), routing_key='workflow.#'),
+    Queue('task', Exchange('tasks', 'topic'), routing_key='task.#'),
+)
+
+# 定义celery定时
+CELERY_BEAT_SCHEDULE = {
+    'task_nsx': {
+        'task': 'workflows.core.producer.produce_workflows',
+        'schedule': timedelta(seconds=5),
+        'options': {
+            'queue': 'workflow'
+        }
+    }
+}
+
+BROKER_TRANSPORT_OPTIONS = {"socket_keepalive": True, "health_check_interval": 4}
