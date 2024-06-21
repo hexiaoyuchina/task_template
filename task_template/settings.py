@@ -13,6 +13,16 @@ import os
 from datetime import timedelta
 from kombu import Queue, Exchange
 from pathlib import Path
+import environ
+
+BASE_DIR = environ.Path(__file__) - 2  # (qos_template/qos_template/settings.py - 2 = qos_template/)
+# Load operating system environment variables and then prepare to use them
+env = environ.Env()
+env_file = "config/envs/%s.env" % env.str("PROJECT_ENV", "local")
+env_path = BASE_DIR(env_file)
+print("load env %s" % env_path)
+env.read_env(env_path)
+
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -38,7 +48,8 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'workflow'
+    'workflow',
+    'models'
 ]
 
 MIDDLEWARE = [
@@ -75,14 +86,21 @@ WSGI_APPLICATION = 'task_template.wsgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
-
+env.ENVIRON['DB_URL'] = env.ENVIRON['DB_URL']
+env.ENVIRON['DB_URL_QOS_TEMPLATE'] = env.ENVIRON['DB_URL_QOS_TEMPLATE']
+# mysql db reconnect
+env.DB_SCHEMES["mysql"] = "common.db_retry.backends.mysql"
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
-    }
+    'default': env.db_url('DB_URL_QOS_TEMPLATE'),
+    'task': env.db_url('DB_URL_QOS_TEMPLATE')
 }
 
+DATABASE_ROUTERS = [
+    'common.db_router.DBRouter',
+]
+DATABASE_APPS_MAPPING = {
+    "task": "task"
+}
 
 # Password validation
 # https://docs.djangoproject.com/en/4.2/ref/settings/#auth-password-validators
