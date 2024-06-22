@@ -20,3 +20,12 @@ class TaskSignatureException(Exception):
     """
     celery任务创建签名错误
     """
+
+
+class RetryException(Exception):
+    """celery 任务重试类"""
+
+
+class ObjectDoesNotExistException(Exception):
+    """实体不存在异常类"""
+

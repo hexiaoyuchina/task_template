@@ -55,10 +55,3 @@ class Failure:
     def instance_error_op(self):
         with transaction.atomic(using="cdscp"):
             Instance.objects.filter(id=self.workflow.gic_resource_id).update(status='error')
-
-    def retry_redis_broken_pipe_error(self):
-        error_info = str(self.einfo)
-        if 'redis.exceptions.ConnectionError: Error 32 while writing to socket. Broken pipe.' in error_info:
-            logger.info(f"workflow {id} get Broken pipe error, update status error to waiting")
-            self.workflow.status = Workflows.WAITING
-            self.workflow.save(update_fields=["status"])

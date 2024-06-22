@@ -3,7 +3,7 @@ import logging
 import celery
 from celery.worker.request import Request
 from workflow.core.failure import Failure
-
+from workflow.core.task_service import TaskService
 logger = logging.getLogger(__file__)
 
 
@@ -31,6 +31,7 @@ class BaseCeleryTask(celery.Task):
     celery 类继承注册celery类， 注册任务时指定基类
     """
     Request = BaseRequest
+    task_service = TaskService()
 
     def build_params(self, result):
         """
@@ -69,7 +70,6 @@ class BaseCeleryTask(celery.Task):
     def on_failure(self, exc, task_id, args, kwargs, einfo):
         failure_op = Failure(self.workflow_id, exc, task_id, args, kwargs, einfo)
         failure_op.main()
-        # failure_op.retry_redis_broken_pipe_error()
         return super().on_failure(exc, task_id, args, kwargs, einfo)
 
     def on_retry(self, exc, task_id, args, kwargs, einfo):
