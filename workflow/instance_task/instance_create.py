@@ -3,6 +3,7 @@ from workflow.core.register_task import register_workflow
 
 @register_workflow("instance_create")
 class InstanceCreate():
+
     def prepare(self):
         pass
 
