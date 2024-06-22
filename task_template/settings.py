@@ -22,7 +22,7 @@ env_file = "config/envs/%s.env" % env.str("PROJECT_ENV", "local")
 env_path = BASE_DIR(env_file)
 print("load env %s" % env_path)
 env.read_env(env_path)
-
+print(env)
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -89,7 +89,7 @@ WSGI_APPLICATION = 'task_template.wsgi.application'
 env.ENVIRON['DB_URL'] = env.ENVIRON['DB_URL']
 env.ENVIRON['DB_URL_QOS_TEMPLATE'] = env.ENVIRON['DB_URL_QOS_TEMPLATE']
 # mysql db reconnect
-env.DB_SCHEMES["mysql"] = "common.db_retry.backends.mysql"
+env.DB_SCHEMES["mysql"] = "common.db_retry"
 DATABASES = {
     'default': env.db_url('DB_URL_QOS_TEMPLATE'),
     'task': env.db_url('DB_URL_QOS_TEMPLATE')

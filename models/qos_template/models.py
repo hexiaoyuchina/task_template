@@ -60,7 +60,8 @@ class Workflows(models.Model):
     objects = WorkflowsManager()
 
     class Meta:
-        app_label = "qos_template"
+        manage = False
+        app_label = "task"
         db_table = "workflows"
 
     def __unicode__(self):
@@ -100,7 +101,8 @@ class Tasks(models.Model):
     objects = TasksManager()
 
     class Meta:
-        app_label = "qos_template"
+        manage = False
+        app_label = "task"
         db_table = "tasks"
 
     def __unicode__(self):
