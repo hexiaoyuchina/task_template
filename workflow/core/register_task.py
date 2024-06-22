@@ -8,7 +8,7 @@ def register_workflow(workflow_type):
 
     :param workflow_type: 任务类型
     :return:
-    类装饰器，将工作流类注册成celery任务，然后将步骤函数组成任务链及组
+    类装饰器，使用基类中的函数装饰器，将工作流类中的函数注册成celery任务，然后将步骤函数组成任务链
     """
     print("register task %s" % workflow_type)
 
