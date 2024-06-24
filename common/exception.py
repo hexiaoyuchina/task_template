@@ -29,3 +29,6 @@ class RetryException(Exception):
 class ObjectDoesNotExistException(Exception):
     """实体不存在异常类"""
 
+
+class TaskNotRegisteredException(Exception):
+    """任务未注册异常类"""

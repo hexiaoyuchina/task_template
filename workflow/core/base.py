@@ -113,6 +113,12 @@ class Workflow:
         cls.finish_step = make_task(_finish, queue=cls.queue)
         return cls.finish_step
 
+    # 执行任务
+    @classmethod
+    def signature(cls, **kwargs):
+        """任务入口: workflow_id=workflow.id, site_id=workflow.site_id, params=params"""
+        return chain_task(cls.prepare_step, cls.build_step, cls.finish_step, kwargs)
+
 
 def make_task(func, queue):
     """包装为celery task
@@ -159,3 +165,48 @@ def task_s(**kwargs):
     # 不能通过 s() 定义执行选项，但是可以通过 set 的链式调用解决
     # 快捷方法： add.s(2, 2).set(countdown=1)
     return task.s(**kwargs).set(queue=queue, priority=pri)  # 创建签名的快捷方法
+
+
+def task_step(build_step, kwargs):
+    """返回工作流任务处理链
+
+    Args:
+        build_step: build function
+        kwargs:
+    Returns:
+        celery task chain
+    """
+    return build_step(**kwargs)
+
+
+def log_celery_tasks(chord_task, prefix=''):
+    for index, task in enumerate(chord_task.tasks):
+        if task.subtask_type in ('chord', 'group'):
+            log_celery_tasks(task, f'{prefix}{index}==')
+        elif task.subtask_type == 'chain':
+            log_celery_tasks(task, f'{prefix}{index}--')
+        else:
+            logger.info(f'{prefix}{task.name}')
+
+
+def chain_task(prepare_step, build_step, finish_step, kwargs):
+    """按规定的顺序组装任务流处理步骤
+    Args:
+        prepare_step (celery.task): workflow prepare function wrapped by celery.task
+        build_step (celery.task): workflow build function (Note: The result of this function is chain, No need to wrap)
+        finish_step (celery.task): workflow finish function wrapped by celery.task
+        kwargs (dict): workflow params
+    Returns:
+        flow task chain
+    """
+    prepare_sig = chain(prepare_step.si(**kwargs))
+    build_sig_list = task_step(build_step, kwargs)
+    finish_sig = chain(finish_step.s(**kwargs))
+    workflow_chain = chain(prepare_sig, *build_sig_list, finish_sig)
+
+    logger.info(f'======workflow chain {kwargs.get("workflow_id")}======')
+    log_celery_tasks(workflow_chain)
+    logger.info('===========================end============================')
+
+    return workflow_chain
+

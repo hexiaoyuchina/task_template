@@ -61,6 +61,7 @@ class BaseTask(BaseCeleryTask):
             self.task_id = task.id
             logger.info(f"task {task.id} type {name} need run is {need_run}")
             if need_run:
+                # 运行celery任务
                 result = super().__call__(*args, **kwargs) or {}
             else:
                 result = task.result

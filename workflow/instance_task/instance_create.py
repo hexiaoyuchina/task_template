@@ -18,6 +18,7 @@ class InstanceCreate(Workflow):
             'instance_id': {'type': 'string'}
         }
 
+    # 执行celery任务时进行参数获取
     @staticmethod
     def prepare_parallel(params):
         instance_id = params.get("instance_id")
@@ -25,7 +26,6 @@ class InstanceCreate(Workflow):
         return {
             'every_obj_param_list':every_obj_param_list
         }
-
 
     def prepare(self):
         return {"prepare_param": "test"}
@@ -35,6 +35,7 @@ class InstanceCreate(Workflow):
             # syadn ： core_type
             'syadn': [
                 ('every_obj_param_list', instance_create_task)
+            ]
         }
 
     def finish(self):
