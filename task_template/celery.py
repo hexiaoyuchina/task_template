@@ -5,7 +5,7 @@ from django.conf import settings
 from celery import Celery
 from celery.signals import after_setup_logger, after_setup_task_logger
 # set the default Django settings module for the 'celery' program.
-os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'qos_template.settings')
+os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'task_template.settings')
 django.setup()
 
 app = Celery('task_template')

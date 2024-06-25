@@ -60,7 +60,6 @@ class Workflows(models.Model):
     objects = WorkflowsManager()
 
     class Meta:
-        manage = False
         app_label = "task"
         db_table = "workflows"
 
@@ -101,7 +100,6 @@ class Tasks(models.Model):
     objects = TasksManager()
 
     class Meta:
-        manage = False
         app_label = "task"
         db_table = "tasks"
 

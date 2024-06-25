@@ -53,5 +53,5 @@ class Failure:
             workflow_cls.on_failure(params)
 
     def instance_error_op(self):
-        with transaction.atomic(using="cdscp"):
+        with transaction.atomic():
             Instance.objects.filter(id=self.workflow.gic_resource_id).update(status='error')

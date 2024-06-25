@@ -17,9 +17,9 @@ def register_workflow(workflow_type):
             RegisterWorkflowException(f"工作流类名称重复{workflow_type}, 请确保唯一")
         # 基类函数（任务流类函数）
         cls.prepare_decorator(cls.prepare)  # 注册为celery任务
-        cls.bulid_decorator(cls.build)  # 注册为celery任务
+        cls.build_decorator(cls.build)  # 注册为celery任务
         cls.finish_decorator(cls.finish)  # 组建子任务链，多资源变成任务组执行，函数定义时注册为celery任务
         REGISTER_WORKFLOWS[workflow_type] = cls
         return cls
-    return decorator()
+    return decorator
 

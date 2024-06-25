@@ -22,7 +22,7 @@ class InstanceCreate(Workflow):
     @staticmethod
     def prepare_parallel(params):
         instance_id = params.get("instance_id")
-        every_obj_param_list = InstanceService.get_all_obj_params()
+        every_obj_param_list = InstanceService.get_all_obj_params(instance_id)
         return {
             'every_obj_param_list':every_obj_param_list
         }

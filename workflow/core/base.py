@@ -89,7 +89,7 @@ class Workflow:
                             ) for f in func
                         ]
                         # 单资源的任务链
-                        group_funcs.append(chain(**chain_funcs))
+                        group_funcs.append(chain(*chain_funcs))
                     if group_funcs:  # 多资源饿任务链，使用任务组，作为一组原子任务执行，执行顺序无先后
                         tasks.append(group(group_funcs))
                     continue
@@ -108,7 +108,7 @@ class Workflow:
         """装饰器：将任务类中的finish函数注册为celery任务"""
         @functools.wraps(finish_func)
         def _finish(self, *args):
-            Workflows.objects.update_status(self.worflow_id, Workflows.FINISH)
+            Workflows.objects.update_status(self.workflow_id, Workflows.FINISH)
             return finish_func(self)
         cls.finish_step = make_task(_finish, queue=cls.queue)
         return cls.finish_step

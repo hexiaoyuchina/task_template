@@ -12,6 +12,5 @@ class Instance(models.Model):
     name = models.CharField(max_length=36, default="")
     status = models.CharField(max_length=20)
     class Meta:
-        manage = False
         app_label = "task"
         db_table = "instance"

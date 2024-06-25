@@ -73,8 +73,9 @@ class WorkflowExecutor:
         workflow = Workflows.objects.set_to_prepare(workflow.id)
         if workflow:
             # 生成workflow的批量任务参数，及任务下发的参数
-            params = prepare_workflow(workflow)
+            params = prepare_workflow(task_handler, workflow)
             logger.info(f"prepare_workflow {params}")
-            # 执行注册的celery任务
+            # 创建celery任务链
             t = task_handler.signature(workflow_id=workflow.id, site_id=workflow.site_id, params=params)
+            # delay方法接受任务函数的参数，并将任务放入任务队列中，等待被执行。
             t.delay()
