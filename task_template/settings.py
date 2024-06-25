@@ -49,6 +49,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'workflow',
+    'tasks',
     'models'
 ]
 
@@ -126,11 +127,13 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'Asia/Shanghai'
 
 USE_I18N = True
 
-USE_TZ = True
+USE_L10N = False
+
+USE_TZ = False
 
 
 # Static files (CSS, JavaScript, Images)
@@ -142,6 +145,8 @@ STATIC_URL = 'static/'
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+RUN_ENV = env.str("RUN_ENV", "test")
 
 # Celery settings
 
@@ -163,7 +168,7 @@ CELERY_TASK_QUEUES = (
 # 定义celery定时
 CELERY_BEAT_SCHEDULE = {
     'task_nsx': {
-        'task': 'workflows.core.producer.produce_workflows',
+        'task': 'workflow.core.producer.produce_workflows',
         'schedule': timedelta(seconds=5),
         'options': {
             'queue': 'workflow'
@@ -172,3 +177,4 @@ CELERY_BEAT_SCHEDULE = {
 }
 
 BROKER_TRANSPORT_OPTIONS = {"socket_keepalive": True, "health_check_interval": 4}
+CELERY_TASK_ALWAYS_EAGER = True
