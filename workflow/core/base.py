@@ -117,6 +117,7 @@ class Workflow:
     @classmethod
     def signature(cls, **kwargs):
         """任务入口: workflow_id=workflow.id, site_id=workflow.site_id, params=params"""
+        logger.info(kwargs)
         return chain_task(cls.prepare_step, cls.build_step, cls.finish_step, kwargs)
 
 
@@ -142,6 +143,7 @@ def make_task(func, queue):
     # 注册任务的名称
     name = "{}.{}".format(func.__module__, func.__name__)
     base_class = step.get(func.__name__) if func.__name__ in step else Task
+    logger.info(f"func {func} make task,queue {queue}")
 
     @task(bind=True, base=base_class, name=name, queue=queue, options={"queue": queue})
     def cel_task(self, *args, **kwargs):

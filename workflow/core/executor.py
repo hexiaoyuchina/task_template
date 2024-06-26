@@ -70,6 +70,7 @@ class WorkflowExecutor:
                                              f"is not support!")
 
         task_handler = REGISTER_WORKFLOWS.get(workflow.workflow_type)
+        # 任务状态更改
         workflow = Workflows.objects.set_to_prepare(workflow.id)
         if workflow:
             # 生成workflow的批量任务参数，及任务下发的参数
@@ -78,4 +79,5 @@ class WorkflowExecutor:
             # 创建celery任务链
             t = task_handler.signature(workflow_id=workflow.id, site_id=workflow.site_id, params=params)
             # delay方法接受任务函数的参数，并将任务放入任务队列中，等待被执行。
-            t.delay()
+            result = t.delay()
+            logger.info(f"delay result{result}")

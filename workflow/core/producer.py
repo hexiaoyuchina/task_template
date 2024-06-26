@@ -40,6 +40,7 @@ def handle_workflow(workflow):
 
 @celery.task
 def produce_workflows():
+    """定时任务，用于查询需要做的任务，并创建该任务的任务链，发送到消息队列，让worker消费做任务"""
     logger.info("produce workflows ....")
     workflows = Workflows.objects.need_do_workflows()
     if not workflows:
@@ -49,9 +50,9 @@ def produce_workflows():
             handle_workflow(workflow=workflow)
 
 
-# if __name__ == '__main__':
-#     task = Workflows.objects.get(id='ccee7d7a-c1a4-11ee-97ef-28dfeb2d090f')
-#     task.status = 'waiting'
-#     task.run_env = 'local'
-#     task.save()
-#     handle_workflow(workflow=task)
+if __name__ == '__main__':
+    task = Workflows.objects.get(id='ccee7d7a-c1a4-11ee-97ef-28dfeb2d090f')
+    task.status = 'waiting'
+    task.run_env = 'test'
+    task.save()
+    handle_workflow(workflow=task)
