@@ -102,3 +102,7 @@ class BaseTask(BaseCeleryTask):
         Tasks.objects.retry_plus_1(self.task_id)
         return super().on_retry(exc, task_id, args, kwargs, einfo)
 
+
+@celery.task(bind=True, base=BaseTask, Q="task")
+def pass_task(self, *args, **kwargs):
+    return {"step": "pass"}
