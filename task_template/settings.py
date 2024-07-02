@@ -150,8 +150,8 @@ RUN_ENV = env.str("RUN_ENV", "test")
 
 # Celery settings
 
-CELERY_BROKER_URL = os.environ.get("CELERY_BROKER_URL", "redis://127.0.0.1:6379/1")
-CELERY_RESULT_BACKEND = os.environ.get("CELERY_RESULT_URL", "redis://127.0.0.1:6379/1")
+CELERY_BROKER_URL = os.environ.get("CELERY_BROKER_URL", "redis://localhost:6379/1")
+CELERY_RESULT_BACKEND = os.environ.get("CELERY_RESULT_URL", "redis://localhost:6379/1")
 CELERY_ACCEPT_CONTENT = ['json']
 CELERY_TASK_SERIALIZER = 'json'
 # 任务结果过期时间

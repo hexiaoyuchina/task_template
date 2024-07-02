@@ -1,6 +1,8 @@
 
 celery -A task_template worker -l info -c 25 -Q task,workflow -f logs/celery.log
 
+celery -A task_template worker -l info -c 25 -O fair --without-gossip --without-mingle --without-heartbeat
+
 
 celery beat -A task_template -l info -f logs/beat.log
 

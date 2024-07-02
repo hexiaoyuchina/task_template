@@ -162,6 +162,7 @@ def task_s(**kwargs):
         raise TaskSignatureException(f"task step {kwargs} become workflow need task params")
     task = kwargs.pop("task")
     queue = task.Q
+    logger.info(f"current queue: {queue}")
     pri = kwargs.pop("priority", 3)
     # signature('tasks.add', args=(2, 2), countdown=10)  任务名称，参数等
     # 不能通过 s() 定义执行选项，但是可以通过 set 的链式调用解决
@@ -207,6 +208,7 @@ def chain_task(prepare_step, build_step, finish_step, kwargs):
     workflow_chain = chain(prepare_sig, *build_sig_list, finish_sig)
 
     logger.info(f'======workflow chain {kwargs.get("workflow_id")}======')
+    logger.info(workflow_chain)
     log_celery_tasks(workflow_chain)
     logger.info('===========================end============================')
 

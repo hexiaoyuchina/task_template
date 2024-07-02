@@ -22,7 +22,7 @@ class BaseTask(BaseCeleryTask):
 
     def __call__(self, *args, **kwargs):
         """执行celery任务前需要做的事情"""
-
+        logger.info(f"current queue: {self.Q}")
         logger.info(f"Start task {self.name} args: {args} kwargs: {kwargs}")
         self.workflow_id = kwargs.get("workflow_id")
         self.task_param = kwargs.get("task_params", {})
