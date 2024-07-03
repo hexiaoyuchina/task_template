@@ -177,4 +177,5 @@ CELERY_BEAT_SCHEDULE = {
 }
 
 BROKER_TRANSPORT_OPTIONS = {"socket_keepalive": True, "health_check_interval": 4}
-CELERY_TASK_ALWAYS_EAGER = True
+# # celery beat直接执行任务没发送到消息队列的原因的原因，celery将掠过一切调度机制，直接运行你的task代码。好处是你可以在不启动worker或消息中间件的情况下执行你的任务或者debug你的任务。
+# CELERY_TASK_ALWAYS_EAGER = True
