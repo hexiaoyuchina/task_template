@@ -167,7 +167,7 @@ CELERY_TASK_QUEUES = (
 
 # 定义celery定时
 CELERY_BEAT_SCHEDULE = {
-    'task_nsx': {
+    'task': {
         'task': 'workflow.core.producer.produce_workflows',
         'schedule': timedelta(seconds=5),
         'options': {
