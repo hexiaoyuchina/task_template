@@ -167,6 +167,8 @@ def task_s(**kwargs):
     # signature('tasks.add', args=(2, 2), countdown=10)  任务名称，参数等
     # 不能通过 s() 定义执行选项，但是可以通过 set 的链式调用解决
     # 快捷方法： add.s(2, 2).set(countdown=1)
+    # # .s(…)方法创建了一个签名：它基本上是一个带有数据的对象，用于指定调用什么函数，以及使用哪些参数。然而，它并不调度任务，也不在方法本身中计算任务。
+    # # .si()也创建了一个签名，但它是不可变的。
     return task.s(**kwargs).set(queue=queue, priority=pri)  # 创建签名的快捷方法
 
 
