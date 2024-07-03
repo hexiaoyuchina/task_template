@@ -1,0 +1,10 @@
+FROM harbor.capitalonline.net/base/python:3.7
+ENV PROJECT_ENV test
+COPY requirements.txt /tmp/requirements.txt
+RUN pip install -r /tmp/requirements.txt -i http://mirrors.aliyun.com/pypi/simple/ --trusted-host mirrors.aliyun.com && \
+    mkdir /app && \
+    cp /usr/share/zoneinfo/Asia/Shanghai /etc/localtime && \
+    echo "Asia/shanghai" >> /etc/timezone
+COPY . /app
+WORKDIR /app
+CMD C_FORCE_ROOT=true celery -A wan_task worker -l info -c 25 -O fair --without-gossip --without-mingle --without-heartbeat
