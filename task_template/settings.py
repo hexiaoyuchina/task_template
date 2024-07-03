@@ -15,6 +15,8 @@ from kombu import Queue, Exchange
 from pathlib import Path
 import environ
 
+# Build paths inside the project like this: BASE_DIR / 'subdir'.
+# BASE_DIR = Path(__file__).resolve().parent.parent
 BASE_DIR = environ.Path(__file__) - 2  # (qos_template/qos_template/settings.py - 2 = qos_template/)
 # Load operating system environment variables and then prepare to use them
 env = environ.Env()
@@ -24,8 +26,6 @@ print("load env %s" % env_path)
 env.read_env(env_path)
 print(env)
 
-# Build paths inside the project like this: BASE_DIR / 'subdir'.
-BASE_DIR = Path(__file__).resolve().parent.parent
 
 
 # Quick-start development settings - unsuitable for production
@@ -179,3 +179,36 @@ CELERY_BEAT_SCHEDULE = {
 BROKER_TRANSPORT_OPTIONS = {"socket_keepalive": True, "health_check_interval": 4}
 # # celery beat直接执行任务没发送到消息队列的原因的原因，celery将掠过一切调度机制，直接运行你的task代码。好处是你可以在不启动worker或消息中间件的情况下执行你的任务或者debug你的任务。
 # CELERY_TASK_ALWAYS_EAGER = True
+
+LOG_PATH = BASE_DIR.path('logs')
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'formatters': {
+        'standard': {
+            'format': '%(asctime)s - %(pathname)s - %(lineno)s - %(levelname)s - %(message)s'
+        },
+    },
+    'handlers': {
+        'default': {
+            'level': 'DEBUG',
+            'class': 'utils.log_helper.MyLoggerHandler',
+            'filename': LOG_PATH('task.log'),
+            'when': 'D',
+            'backup_count': 365,
+            'formatter': 'standard',
+        },
+        'console': {
+            'level': 'DEBUG',
+            'class': 'logging.StreamHandler',
+            'formatter': 'standard',
+        }
+    },
+    'loggers': {
+        '': {
+            'handlers': ['console', 'default'],
+            'level': 'INFO',
+            'propagate': False
+        }
+    }
+}
